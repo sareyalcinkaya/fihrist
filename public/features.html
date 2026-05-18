@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Features — Frist.ai</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+/* HOW IT WORKS */
+#how{padding:4rem 2.5rem}
+.steps-grid{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid rgba(28,24,20,.12);margin-top:2rem}
+.step{padding:1.4rem 1.2rem;border-right:1px solid rgba(28,24,20,.12);transition:background .2s}
+.step:last-child{border-right:none}
+.step:hover{background:var(--cream-mid)}
+.step-n{font-size:2rem;font-weight:700;color:var(--cream-dark);line-height:1;margin-bottom:.6rem}
+.step-name{font-size:.95rem;font-weight:700;color:var(--ink);margin-bottom:.35rem}
+.step-desc{font-style:italic;font-size:.8rem;line-height:1.55;color:var(--ink-muted)}
+
+/* FEATURES */
+#features{background:var(--cream-mid);padding:4rem 2.5rem}
+.features-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border:1px solid rgba(28,24,20,.12);margin-top:2rem}
+.feat{padding:1.5rem;border-right:1px solid rgba(28,24,20,.12);border-bottom:1px solid rgba(28,24,20,.12);position:relative;overflow:hidden;transition:background .2s}
+.feat:nth-child(2n){border-right:none}
+.feat:nth-last-child(-n+2){border-bottom:none}
+.feat:hover{background:var(--cream)}
+.feat::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--red);transition:width .2s}
+.feat:hover::before{width:3px}
+.feat-tag{font-style:italic;font-size:.7rem;color:var(--red);margin-bottom:.4rem}
+.feat-name{font-size:1.05rem;font-weight:700;color:var(--ink);margin-bottom:.4rem}
+.feat-desc{font-size:.85rem;line-height:1.6;color:var(--ink-muted)}
+.feat-list{list-style:none;margin-top:.75rem;display:flex;flex-direction:column;gap:.25rem}
+.feat-list li{font-size:.75rem;color:var(--ink-faint);display:flex;gap:.4rem}
+.feat-list li::before{content:'—';color:rgba(28,24,20,.2)}
+
+/* WHO */
+#who{padding:4rem 2.5rem}
+.who-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid rgba(28,24,20,.12);margin-top:2rem}
+.who-card{padding:1.4rem 1.25rem;border-right:1px solid rgba(28,24,20,.12);transition:background .2s}
+.who-card:last-child{border-right:none}
+.who-card:hover{background:var(--cream-mid)}
+.who-badge{font-style:italic;font-size:.7rem;color:var(--red);margin-bottom:.75rem}
+.who-name{font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:.2rem}
+.who-role{font-style:italic;font-size:.78rem;color:var(--ink-faint);margin-bottom:.75rem}
+.who-desc{font-size:.82rem;line-height:1.6;color:var(--ink-muted)}
+
+@media(max-width:1024px){.steps-grid{grid-template-columns:repeat(3,1fr)}.step:nth-child(3){border-right:none}.step:nth-child(4),.step:nth-child(5){border-top:1px solid rgba(28,24,20,.12)}}
+@media(max-width:900px){.features-grid,.who-grid{grid-template-columns:1fr}.steps-grid{grid-template-columns:1fr 1fr}.feat{border-right:none!important}.feat:nth-last-child(-n+2){border-bottom:1px solid rgba(28,24,20,.12)}.feat:last-child{border-bottom:none}.who-card{border-right:none;border-bottom:1px solid rgba(28,24,20,.12)}.who-card:last-child{border-bottom:none}}
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+
+<nav id="navbar">
+  <a href="/" class="nav-brand">
+    <div class="nav-logomark">
+      <svg viewBox="0 0 16 16" fill="none">
+        <circle cx="4" cy="12" r="2" fill="#F2EDE3" opacity=".9"/>
+        <circle cx="8" cy="7" r="2" fill="#B84032"/>
+        <circle cx="12" cy="4" r="2" fill="#F2EDE3" opacity=".45"/>
+        <line x1="4" y1="12" x2="8" y2="7" stroke="#F2EDE3" stroke-width=".8" opacity=".35"/>
+        <line x1="8" y1="7" x2="12" y2="4" stroke="#F2EDE3" stroke-width=".8" opacity=".35"/>
+      </svg>
+    </div>
+    <span class="nav-wordmark">Frist<em>.ai</em></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/features.html">Features</a></li>
+    <li><a href="/pricing.html">Pricing</a></li>
+    <li><a href="/#reach" class="nav-cta">Get in Touch</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="section-label">How it works</div>
+    <h2>From application to <em>programme complete.</em></h2>
+    <div class="steps-grid">
+      <div class="step reveal">
+        <div class="step-n">01</div>
+        <div class="step-name">Intake</div>
+        <p class="step-desc">Custom application forms. Applicants submit documents through a clean portal.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-n">02</div>
+        <div class="step-name">Screen</div>
+        <p class="step-desc">AI reads every document, scores applicants, and surfaces the strongest candidates.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-n">03</div>
+        <div class="step-name">Decide</div>
+        <p class="step-desc">Review scored shortlists. Accept, reject, or waitlist with one click.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-n">04</div>
+        <div class="step-name">Run</div>
+        <p class="step-desc">Track attendance, milestones, and flag participants at risk early.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-n">05</div>
+        <div class="step-name">Report</div>
+        <p class="step-desc">One-click outcome reports for boards and CSRD/ESG compliance.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="section-label">Features</div>
+    <h2>Everything a coordinator <em>actually needs.</em></h2>
+    <div class="features-grid">
+      <div class="feat reveal">
+        <div class="feat-tag">AI Layer</div>
+        <div class="feat-name">AI Eligibility Screening</div>
+        <p class="feat-desc">Reads CVs, transcripts, and motivation letters. Scores applicants against your criteria before you open a single file.</p>
+        <ul class="feat-list"><li>CV & transcript parsing</li><li>Motivation letter scoring</li><li>Red flag detection</li></ul>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-tag">Intake</div>
+        <div class="feat-name">Application Management</div>
+        <p class="feat-desc">Custom forms, document upload, automatic folder creation per applicant, and a pipeline view across rounds.</p>
+        <ul class="feat-list"><li>Drag-and-drop form builder</li><li>Status pipeline</li><li>Bulk email templates</li></ul>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-tag">Cohort</div>
+        <div class="feat-name">Cohort Lifecycle Tracking</div>
+        <p class="feat-desc">Attendance, milestones, participation monitoring, and early-warning flags — all in one place.</p>
+        <ul class="feat-list"><li>QR-code attendance check-in</li><li>Dropout risk alerts</li><li>Alumni history</li></ul>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-tag">Insights</div>
+        <div class="feat-name">Programme Intelligence</div>
+        <p class="feat-desc">Cohort health dashboards and one-click outcome reports for boards, funders, and CSRD/ESG compliance.</p>
+        <ul class="feat-list"><li>Conversion funnel</li><li>One-click outcome reports</li><li>CSRD/ESG export</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IT'S FOR -->
+  <section id="who">
+    <div class="section-label">Who it's for</div>
+    <h2>Built for the people who <em>do the work.</em></h2>
+    <div class="who-grid">
+      <div class="who-card reveal">
+        <div class="who-badge">Primary</div>
+        <div class="who-name">The Programme Coordinator</div>
+        <div class="who-role">1–4 person team · University incubator or accelerator</div>
+        <p class="who-desc">Spends 40–60% of their time on intake admin. Needs a tool that works from day one without a three-month onboarding.</p>
+      </div>
+      <div class="who-card reveal">
+        <div class="who-badge">Secondary</div>
+        <div class="who-name">The Programme Director</div>
+        <div class="who-role">Head of Innovation · NGO lead</div>
+        <p class="who-desc">No real-time view of cohort health. Relies on manual updates and gets caught off-guard at board meetings.</p>
+      </div>
+      <div class="who-card reveal">
+        <div class="who-badge">Free tier</div>
+        <div class="who-name">The Student Club Lead</div>
+        <div class="who-role">Club president · University student</div>
+        <p class="who-desc">Running a competitive selection with zero tools and zero budget. The free tier is built for them.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Frist.ai · Built in Vienna · ESI i²c, TU Wien</p>
+    <span class="footer-sig">the index was always right there.</span>
+  </footer>
+
+</div>
+
+<script>
+const cursor=document.getElementById('cursor');
+document.addEventListener('mousemove',e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px'});
+document.querySelectorAll('a,button,.feat,.step,.who-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cursor.classList.remove('big'));
+});
+const obs=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*60);obs.unobserve(e.target)}})},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+let lastY=0;
+window.addEventListener('scroll',()=>{const y=window.scrollY;document.getElementById('navbar').style.transform=y>lastY&&y>80?'translateY(-100%)':'translateY(0)';lastY=y},{passive:true});
+</script>
+</body>
+</html>
