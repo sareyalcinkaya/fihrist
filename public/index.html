@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fihrist — AI-native programme management for cohort-based organizations</title>
+<meta name="description" content="Fihrist automates the full cohort lifecycle — application intake to programme completion. Built for university incubators, accelerators, and fellowship programmes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+:root{
+  --cream:#F2EDE3;--cream-mid:#EAE2D4;--cream-dark:#DDD3C0;
+  --ink:#1C1814;--ink-muted:#5A5248;--ink-faint:#9A9088;
+  --red:#B84032;--red-pale:#E8CFC9;--red-deep:#7E2A1F;
+  --gold:#A07840;
+  --serif:'Playfair Display',Georgia,serif;
+  --lora:'Lora',Georgia,serif;
+  --mono:'DM Mono','Courier New',monospace;
+}
+body{background:var(--cream);color:var(--ink);font-family:var(--lora);font-weight:400;line-height:1.6;overflow-x:hidden;cursor:none}
+.cursor{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--red);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s;mix-blend-mode:multiply}
+.cursor.big{width:38px;height:38px;opacity:.3}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-size:200px 200px;pointer-events:none;z-index:1000;opacity:.55}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1.25rem 3rem;background:var(--cream);border-bottom:1px solid rgba(28,24,20,.1);transition:transform .3s}
+.nav-brand{display:flex;align-items:center;gap:.65rem;text-decoration:none}
+.nav-logomark{width:30px;height:30px;background:var(--ink);display:flex;align-items:center;justify-content:center;border-radius:5px}
+.nav-logomark svg{width:16px;height:16px}
+.nav-wordmark{font-family:var(--serif);font-weight:700;font-size:1.15rem;letter-spacing:-.02em;color:var(--ink)}
+.nav-wordmark em{font-style:italic;color:var(--red)}
+.nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+.nav-links a{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);text-decoration:none;position:relative;transition:color .15s}
+.nav-links a::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:var(--red);transition:width .2s}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a:hover::after{width:100%}
+.nav-cta{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--cream)!important;background:var(--ink);padding:.55rem 1.25rem;text-decoration:none;transition:background .15s!important}
+.nav-cta::after{display:none!important}
+.nav-cta:hover{background:var(--red)!important}
+
+/* SHARED */
+.section{padding:7rem 3rem;position:relative}
+.section-num{font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:.5rem}
+.section-heading{font-family:var(--serif);font-size:clamp(2.2rem,3.2vw,3.2rem);font-weight:400;line-height:1.1;letter-spacing:-.025em;color:var(--ink);margin-bottom:1rem}
+.section-heading em{font-style:italic;color:var(--red)}
+.section-intro{font-family:var(--lora);font-size:1rem;line-height:1.75;color:var(--ink-muted);max-width:540px;margin-bottom:4rem}
+hr.rule{border:none;border-top:1px solid rgba(28,24,20,.12);margin-bottom:4rem}
+.btn-ink{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--cream);background:var(--ink);padding:.9rem 1.9rem;text-decoration:none;border:1px solid var(--ink);display:inline-block;transition:background .15s,border-color .15s;cursor:pointer}
+.btn-ink:hover{background:var(--red);border-color:var(--red)}
+.btn-ghost{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);background:transparent;padding:.9rem 1.9rem;text-decoration:none;border:1px solid rgba(28,24,20,.3);display:inline-block;transition:border-color .15s;cursor:pointer}
+.btn-ghost:hover{border-color:var(--ink)}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.strip-tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap;padding:.3rem .8rem;border:1px solid rgba(28,24,20,.14)}
+
+/* HERO */
+#hero{min-height:100vh;padding:0 3rem;display:grid;grid-template-columns:1fr 460px;grid-template-rows:1fr auto;align-items:center;padding-top:65px;overflow:hidden;position:relative}
+.hero-bg-word{position:absolute;bottom:-.05em;right:-.03em;font-family:var(--serif);font-weight:700;font-size:26vw;color:transparent;-webkit-text-stroke:1px rgba(28,24,20,.055);letter-spacing:-.05em;line-height:1;user-select:none;pointer-events:none;z-index:0}
+.hero-left{position:relative;z-index:1;padding:6rem 0}
+.hero-eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:1.75rem;display:flex;align-items:center;gap:.75rem}
+.hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--red)}
+h1.hero-title{font-family:var(--serif);font-size:clamp(3.2rem,5.5vw,5.5rem);font-weight:400;line-height:1.0;letter-spacing:-.03em;color:var(--ink);margin-bottom:.2em}
+h1.hero-title em{font-style:italic;color:var(--red)}
+h1.hero-title .indent{padding-left:3rem}
+.hero-sub{font-family:var(--serif);font-style:italic;font-size:clamp(1.25rem,2vw,1.9rem);color:var(--ink-muted);margin:.7rem 0 2.25rem;letter-spacing:-.01em}
+.hero-desc{font-family:var(--lora);font-size:1rem;line-height:1.75;color:var(--ink-muted);max-width:460px;margin-bottom:2.75rem;border-left:2px solid var(--red-pale);padding-left:1.25rem}
+.hero-actions{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:2.5rem}
+.hero-nudge{font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;color:var(--ink-faint)}
+.hero-nudge span{color:var(--red)}
+.hero-right{position:relative;z-index:1;padding:6rem 0 6rem 3rem;border-left:1px solid rgba(28,24,20,.12);display:flex;flex-direction:column;gap:2rem;animation:fadeUp .7s .3s both}
+.hero-stat-num{font-family:var(--serif);font-size:2.4rem;font-weight:700;letter-spacing:-.04em;line-height:1;color:var(--ink)}
+.hero-stat-num sup{font-size:.45em;color:var(--red);font-weight:400}
+.hero-stat-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-top:.3rem}
+.hero-proof{display:flex;align-items:center;gap:.6rem;font-family:var(--mono);font-size:.65rem;color:var(--red);letter-spacing:.06em}
+.hero-proof::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse 2s infinite}
+.hero-strip{grid-column:1/-1;display:flex;align-items:center;gap:1.5rem;padding:1.5rem 0;border-top:1px solid rgba(28,24,20,.1);overflow:hidden;animation:fadeUp .7s .6s both}
+
+/* PROBLEM */
+#problem{background:var(--cream-mid)}
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem}
+.problem-quote{font-family:var(--serif);font-size:1.6rem;font-weight:400;line-height:1.4;color:var(--ink);letter-spacing:-.01em;border-left:3px solid var(--red);padding-left:1.5rem;margin-bottom:2rem}
+.problem-quote em{font-style:italic;color:var(--red)}
+.problem-body p{font-family:var(--lora);font-size:1rem;line-height:1.8;color:var(--ink-muted);margin-bottom:1.25rem}
+.pain-list{list-style:none;display:flex;flex-direction:column;gap:.85rem}
+.pain-item{display:flex;gap:.85rem;align-items:flex-start;font-family:var(--lora);font-size:.95rem;line-height:1.6;color:var(--ink-muted)}
+.pain-item::before{content:'✕';font-family:var(--mono);font-size:.7rem;color:var(--red);flex-shrink:0;margin-top:.2rem}
+
+/* HOW */
+#how{background:var(--cream)}
+.steps-row{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid rgba(28,24,20,.12);position:relative}
+.step-col{padding:2.5rem 1.75rem;border-right:1px solid rgba(28,24,20,.12);position:relative;z-index:1;background:var(--cream);transition:background .2s}
+.step-col:last-child{border-right:none}
+.step-col:hover{background:var(--cream-mid)}
+.step-n{font-family:var(--serif);font-size:3rem;font-weight:700;color:var(--cream-dark);line-height:1;margin-bottom:1rem;letter-spacing:-.04em}
+.step-icon{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
+.step-icon::before{content:'';width:18px;height:1px;background:var(--red)}
+.step-title{font-family:var(--serif);font-size:1.1rem;font-weight:400;color:var(--ink);margin-bottom:.5rem;line-height:1.3}
+.step-desc{font-family:var(--lora);font-size:.85rem;line-height:1.65;color:var(--ink-muted)}
+
+/* FEATURES */
+#features{background:var(--cream-mid)}
+.features-layout{display:grid;grid-template-columns:1fr 2fr;gap:5rem;align-items:start}
+.features-left{position:sticky;top:100px}
+.features-list{display:flex;flex-direction:column;gap:0;border:1px solid rgba(28,24,20,.12)}
+.feature-row{padding:2rem;border-bottom:1px solid rgba(28,24,20,.1);position:relative;overflow:hidden;transition:background .2s}
+.feature-row:last-child{border-bottom:none}
+.feature-row:hover{background:var(--cream)}
+.feature-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--red);transition:width .2s}
+.feature-row:hover::before{width:3px}
+.feat-tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:.6rem}
+.feat-name{font-family:var(--serif);font-size:1.2rem;font-weight:400;color:var(--ink);margin-bottom:.5rem;letter-spacing:-.01em}
+.feat-desc{font-family:var(--lora);font-size:.875rem;line-height:1.7;color:var(--ink-muted);margin-bottom:.75rem}
+.feat-bullets{list-style:none;display:flex;flex-direction:column;gap:.3rem}
+.feat-bullets li{font-family:var(--mono);font-size:.65rem;letter-spacing:.04em;color:var(--ink-faint);display:flex;align-items:center;gap:.5rem}
+.feat-bullets li::before{content:'—';color:rgba(28,24,20,.2)}
+
+/* PERSONAS */
+#personas{background:var(--ink);color:var(--cream)}
+#personas .section-heading{color:var(--cream)}
+#personas .section-intro{color:rgba(242,237,227,.5)}
+#personas hr.rule{border-top-color:rgba(242,237,227,.1)}
+#personas .section-num{color:rgba(242,237,227,.25)}
+.persona-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid rgba(242,237,227,.1)}
+.persona-card{padding:2.5rem;border-right:1px solid rgba(242,237,227,.1);transition:background .2s}
+.persona-card:last-child{border-right:none}
+.persona-card:hover{background:rgba(242,237,227,.03)}
+.persona-badge{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:1.25rem;display:flex;align-items:center;gap:.4rem}
+.persona-badge::before{content:'';width:16px;height:1px;background:var(--red)}
+.persona-name{font-family:var(--serif);font-size:1.35rem;font-weight:400;color:var(--cream);margin-bottom:.25rem;letter-spacing:-.01em}
+.persona-role{font-family:var(--lora);font-style:italic;font-size:.9rem;color:rgba(242,237,227,.45);margin-bottom:1.5rem}
+.persona-pain{font-family:var(--lora);font-size:.875rem;line-height:1.7;color:rgba(242,237,227,.65);margin-bottom:1.5rem}
+.persona-pain em{color:rgba(242,237,227,.9);font-style:italic}
+.persona-wins{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.persona-wins li{font-family:var(--mono);font-size:.62rem;letter-spacing:.04em;color:rgba(242,237,227,.5);display:flex;align-items:center;gap:.5rem}
+.persona-wins li::before{content:'→';color:var(--red);font-size:.65rem}
+
+/* PRICING */
+#pricing{background:var(--cream)}
+.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid rgba(28,24,20,.12)}
+.price-card{padding:2.5rem 2rem;border-right:1px solid rgba(28,24,20,.12);position:relative;transition:background .2s}
+.price-card:last-child{border-right:none}
+.price-card.featured{background:var(--ink);color:var(--cream)}
+.price-card:not(.featured):hover{background:var(--cream-mid)}
+.price-tier{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:1rem}
+.price-card.featured .price-tier{color:rgba(242,237,227,.45)}
+.price-badge{position:absolute;top:1.25rem;right:1.25rem;font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:var(--red);padding:.2rem .5rem}
+.price-amount{font-family:var(--serif);font-size:2.5rem;font-weight:700;letter-spacing:-.04em;line-height:1;color:var(--ink);margin-bottom:.25rem}
+.price-card.featured .price-amount{color:var(--cream)}
+.price-amount span{font-size:1rem;font-weight:400;color:var(--ink-faint);vertical-align:super}
+.price-card.featured .price-amount span{color:rgba(242,237,227,.4)}
+.price-period{font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;color:var(--ink-faint);margin-bottom:1.5rem}
+.price-card.featured .price-period{color:rgba(242,237,227,.4)}
+.price-desc{font-family:var(--lora);font-size:.875rem;line-height:1.65;color:var(--ink-muted);margin-bottom:1.75rem;padding-bottom:1.75rem;border-bottom:1px solid rgba(28,24,20,.1)}
+.price-card.featured .price-desc{color:rgba(242,237,227,.6);border-bottom-color:rgba(242,237,227,.1)}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:.6rem;margin-bottom:2rem}
+.price-features li{font-family:var(--lora);font-size:.85rem;color:var(--ink-muted);display:flex;align-items:flex-start;gap:.5rem}
+.price-card.featured .price-features li{color:rgba(242,237,227,.7)}
+.price-features li::before{content:'✓';font-family:var(--mono);font-size:.65rem;color:var(--red);flex-shrink:0;margin-top:.15rem}
+.price-features li.muted{opacity:.4}
+.price-features li.muted::before{content:'—';color:inherit}
+.price-cta{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;display:block;text-align:center;padding:.8rem 1rem;border:1px solid rgba(28,24,20,.25);color:var(--ink);transition:background .15s,border-color .15s,color .15s;cursor:pointer;background:transparent}
+.price-cta:hover{border-color:var(--ink);background:var(--ink);color:var(--cream)}
+.price-card.featured .price-cta{background:var(--red);border-color:var(--red);color:var(--cream)}
+.price-card.featured .price-cta:hover{background:var(--red-deep);border-color:var(--red-deep)}
+
+/* PROOF */
+#proof{background:var(--cream-mid)}
+.proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid rgba(28,24,20,.12)}
+.proof-card{padding:2.75rem;border-right:1px solid rgba(28,24,20,.12);border-bottom:1px solid rgba(28,24,20,.12)}
+.proof-card:nth-child(2n){border-right:none}
+.proof-card:nth-last-child(-n+2){border-bottom:none}
+.proof-quote{font-family:var(--serif);font-size:1.15rem;font-weight:400;line-height:1.55;color:var(--ink);margin-bottom:1.5rem;letter-spacing:-.01em}
+.proof-quote em{font-style:italic;color:var(--red)}
+.proof-attr{display:flex;align-items:center;gap:.75rem}
+.proof-initials{width:36px;height:36px;border-radius:50%;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:.8rem;font-weight:700;color:var(--ink-muted);flex-shrink:0}
+.proof-name{font-family:var(--serif);font-size:.95rem;color:var(--ink)}
+.proof-org{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;color:var(--ink-faint);margin-top:.1rem}
+
+/* ── MODAL OVERLAY ─────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(28,24,20,.65);z-index:800;display:flex;align-items:center;justify-content:center;padding:2rem;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--cream);max-width:580px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+.modal-close{position:absolute;top:1.25rem;right:1.25rem;width:32px;height:32px;background:none;border:1px solid rgba(28,24,20,.2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.9rem;color:var(--ink-muted);transition:border-color .15s,color .15s;flex-shrink:0}
+.modal-close:hover{border-color:var(--ink);color:var(--ink)}
+.modal-inner{padding:3rem}
+.modal-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+.modal-label::before{content:'';width:20px;height:1px;background:var(--red)}
+.modal-title{font-family:var(--serif);font-size:2rem;font-weight:400;letter-spacing:-.025em;color:var(--ink);margin-bottom:.5rem;line-height:1.15}
+.modal-title em{font-style:italic;color:var(--red)}
+.modal-sub{font-family:var(--lora);font-size:.9rem;line-height:1.65;color:var(--ink-muted);margin-bottom:2rem}
+
+/* Form fields */
+.form-group{margin-bottom:1.25rem}
+.form-label{display:block;font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem}
+.form-input,.form-select,.form-textarea{width:100%;padding:.75rem 1rem;background:var(--cream-mid);border:1px solid rgba(28,24,20,.18);font-family:var(--lora);font-size:.9rem;color:var(--ink);outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none;border-radius:0}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--red)}
+.form-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239A9088' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem;cursor:pointer}
+.form-textarea{resize:vertical;min-height:100px;font-family:var(--lora)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-note{font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;color:var(--ink-faint);margin-top:.4rem}
+.form-submit{width:100%;margin-top:1.75rem}
+.form-submit .btn-ink{width:100%;text-align:center;justify-content:center;display:block;padding:1rem}
+.form-success{display:none;text-align:center;padding:2rem 0}
+.form-success-icon{font-size:2rem;margin-bottom:1rem}
+.form-success-title{font-family:var(--serif);font-size:1.5rem;font-weight:400;color:var(--ink);margin-bottom:.5rem}
+.form-success-title em{font-style:italic;color:var(--red)}
+.form-success-msg{font-family:var(--lora);font-size:.9rem;color:var(--ink-muted);line-height:1.6}
+.form-error{display:none;font-family:var(--mono);font-size:.65rem;letter-spacing:.06em;color:var(--red);margin-top:1rem;text-align:center}
+
+/* CTA BAND */
+#cta{background:var(--ink);padding:7rem 3rem;position:relative;overflow:hidden}
+.cta-bg{position:absolute;bottom:-.05em;right:-.02em;font-family:var(--serif);font-weight:700;font-size:22vw;color:transparent;-webkit-text-stroke:1px rgba(242,237,227,.04);letter-spacing:-.05em;line-height:1;pointer-events:none;user-select:none}
+.cta-inner{position:relative;z-index:1;max-width:700px}
+.cta-label{font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(242,237,227,.35);margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem}
+.cta-label::before{content:'';width:28px;height:1px;background:var(--red)}
+.cta-heading{font-family:var(--serif);font-size:clamp(2.5rem,4vw,4.5rem);font-weight:400;line-height:1.05;letter-spacing:-.03em;color:var(--cream);margin-bottom:1.5rem}
+.cta-heading em{font-style:italic;color:var(--red)}
+.cta-sub{font-family:var(--lora);font-size:1rem;line-height:1.75;color:rgba(242,237,227,.5);max-width:480px;margin-bottom:3rem}
+.cta-row{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.btn-cream{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);background:var(--cream);padding:.9rem 1.9rem;text-decoration:none;border:1px solid var(--cream);display:inline-block;transition:background .15s,color .15s;cursor:pointer}
+.btn-cream:hover{background:var(--red);border-color:var(--red);color:var(--cream)}
+.btn-ghost-light{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(242,237,227,.6);background:transparent;padding:.9rem 1.9rem;text-decoration:none;border:1px solid rgba(242,237,227,.2);display:inline-block;transition:border-color .15s,color .15s;cursor:pointer}
+.btn-ghost-light:hover{border-color:rgba(242,237,227,.5);color:var(--cream)}
+
+/* FOOTER */
+footer{padding:2rem 3rem;background:var(--cream);border-top:1px solid rgba(28,24,20,.1);display:flex;align-items:center;justify-content:space-between}
+footer p{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;color:var(--ink-faint)}
+.footer-sig{font-family:var(--serif);font-style:italic;font-size:.875rem;color:var(--ink-faint)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-eyebrow{animation:fadeUp .7s .1s both}
+h1.hero-title{animation:fadeUp .7s .2s both}
+.hero-sub{animation:fadeUp .7s .3s both}
+.hero-desc{animation:fadeUp .7s .4s both}
+.hero-actions{animation:fadeUp .7s .5s both}
+
+@media(max-width:1024px){.steps-row{grid-template-columns:repeat(3,1fr)}.pricing-grid{grid-template-columns:1fr 1fr}.price-card:nth-child(2){border-right:none}.price-card:nth-child(3){border-top:1px solid rgba(28,24,20,.12)}}
+@media(max-width:900px){nav{padding:1rem 1.5rem}.nav-links{display:none}#hero{grid-template-columns:1fr;padding:0 1.5rem}.hero-right{display:none}.hero-bg-word{font-size:40vw}.section{padding:5rem 1.5rem}.problem-grid,.features-layout,.proof-grid{grid-template-columns:1fr}.persona-grid{grid-template-columns:1fr;border:none}.persona-card{border-right:none;border-bottom:1px solid rgba(242,237,227,.1)}.steps-row{grid-template-columns:1fr 1fr}.pricing-grid{grid-template-columns:1fr}.price-card{border-right:none;border-bottom:1px solid rgba(28,24,20,.12)}.proof-card{border-right:none!important}.footer{flex-direction:column;gap:.75rem;text-align:center}.form-row{grid-template-columns:1fr}.modal-inner{padding:2rem}}
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+
+<!-- ══ NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-brand">
+    <div class="nav-logomark">
+      <svg viewBox="0 0 16 16" fill="none">
+        <circle cx="4" cy="12" r="2" fill="#F2EDE3" opacity=".9"/>
+        <circle cx="8" cy="7" r="2" fill="#B84032"/>
+        <circle cx="12" cy="4" r="2" fill="#F2EDE3" opacity=".45"/>
+        <line x1="4" y1="12" x2="8" y2="7" stroke="#F2EDE3" stroke-width=".8" opacity=".35"/>
+        <line x1="8" y1="7" x2="12" y2="4" stroke="#F2EDE3" stroke-width=".8" opacity=".35"/>
+      </svg>
+    </div>
+    <span class="nav-wordmark">Fih<em>rist</em></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#personas">Who it's for</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#" class="nav-cta" onclick="openModal('access');return false">Get Early Access</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HERO -->
+<section id="hero">
+  <div class="hero-bg-word" aria-hidden="true">F.</div>
+  <div class="hero-left">
+    <div class="hero-eyebrow">AI-native programme management · Early access open</div>
+    <h1 class="hero-title">
+      Stop managing<br>
+      <em>cohorts</em> in<br>
+      <span class="indent">spreadsheets.</span>
+    </h1>
+    <p class="hero-sub">The index was always right there.</p>
+    <p class="hero-desc">
+      Fihrist automates the full cohort lifecycle — from application intake
+      to programme completion. Built for the coordinators at university
+      incubators, accelerators, and fellowship programmes who spend
+      their best hours on paperwork instead of people.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-ink" onclick="openModal('access')">Get Early Access</button>
+      <a href="#how" class="btn-ghost">See How It Works</a>
+    </div>
+    <div class="hero-nudge">Free tier available · <span>No credit card required</span></div>
+  </div>
+  <div class="hero-right">
+    <div>
+      <div class="hero-stat-num">40<sup>%</sup></div>
+      <div class="hero-stat-label">Of coordinator time lost to intake admin</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">7k<sup>+</sup></div>
+      <div class="hero-stat-label">University incubators globally — underserved</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">€249</div>
+      <div class="hero-stat-label">Growth tier / month — less than 10 hrs of manual work</div>
+    </div>
+    <div class="hero-proof">ESI i²c, TU Wien — Proof-of-concept customer</div>
+  </div>
+  <div class="hero-strip">
+    <span class="strip-tag">AI Screening</span>
+    <span class="strip-tag">Cohort Lifecycle</span>
+    <span class="strip-tag">Application Intake</span>
+    <span class="strip-tag">Attendance Tracking</span>
+    <span class="strip-tag">Outcome Reporting</span>
+    <span class="strip-tag">University Incubators</span>
+    <span class="strip-tag">Accelerators</span>
+    <span class="strip-tag">Fellowship Programmes</span>
+    <span class="strip-tag">Built in Vienna</span>
+  </div>
+</section>
+
+<!-- ══ PROBLEM -->
+<section class="section" id="problem">
+  <div class="section-num">01 / The Problem</div>
+  <hr class="rule">
+  <div class="problem-grid">
+    <div class="reveal">
+      <div class="problem-quote">"Every application round, I spend two weeks doing things <em>a computer could do in two minutes.</em>"</div>
+      <div class="problem-body">
+        <p>Programme coordinators are the backbone of Europe's innovation ecosystem. They run incubators, fellowships, and accelerators that launch hundreds of startups every year. And they do it with Google Sheets, shared inboxes, and sheer determination.</p>
+        <p>The tools built for them either don't exist, cost more than their annual budget, or were designed for a different industry entirely.</p>
+      </div>
+    </div>
+    <div class="reveal">
+      <ul class="pain-list">
+        <li class="pain-item">Sorting 300 applications by hand, copy-pasting eligibility checks into spreadsheets</li>
+        <li class="pain-item">Chasing missing documents over email for weeks before a decision can even begin</li>
+        <li class="pain-item">No real-time view of cohort health — only the coordinator knows what's happening</li>
+        <li class="pain-item">Board reporting requires building a new spreadsheet from scratch every cycle</li>
+        <li class="pain-item">Submittable and AcceleratorApp cost €800+/month and require a sales call</li>
+        <li class="pain-item">Student clubs and small university programmes are completely unserved</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="section-num">02 / How It Works</div>
+  <h2 class="section-heading reveal">From first application<br>to <em>programme complete.</em></h2>
+  <p class="section-intro reveal">Five stages. Every manual process removed from your week.</p>
+  <hr class="rule">
+  <div class="steps-row">
+    <div class="step-col reveal"><div class="step-n">01</div><div class="step-icon">Intake</div><div class="step-title">Custom application forms</div><p class="step-desc">Build your form once. Applicants submit documents, CVs, and motivation letters through a clean portal. Fihrist creates a folder per applicant automatically.</p></div>
+    <div class="step-col reveal"><div class="step-n">02</div><div class="step-icon">Screen</div><div class="step-title">AI eligibility scoring</div><p class="step-desc">Fihrist reads every document. It checks eligibility criteria, scores motivation letters, flags red flags, and surfaces the strongest candidates — before you open a single file.</p></div>
+    <div class="step-col reveal"><div class="step-n">03</div><div class="step-icon">Decide</div><div class="step-title">Review & accept</div><p class="step-desc">Your team reviews scored shortlists, not raw piles. Accept, reject, or waitlist with one click. Emails go out automatically, on your template.</p></div>
+    <div class="step-col reveal"><div class="step-n">04</div><div class="step-icon">Run</div><div class="step-title">Cohort management</div><p class="step-desc">Track attendance, send check-ins, monitor milestones, and flag participants at risk of dropping before the problem becomes a problem.</p></div>
+    <div class="step-col reveal"><div class="step-n">05</div><div class="step-icon">Report</div><div class="step-title">Outcomes & insights</div><p class="step-desc">One-click outcome reports for boards, funders, and CSRD/ESG compliance. Every cycle builds your programme's evidence base.</p></div>
+  </div>
+</section>
+
+<!-- ══ FEATURES -->
+<section class="section" id="features">
+  <div class="section-num">03 / Features</div>
+  <h2 class="section-heading reveal">Everything a coordinator<br>actually <em>needs.</em></h2>
+  <hr class="rule">
+  <div class="features-layout">
+    <div class="features-left reveal">
+      <p class="section-intro" style="margin-bottom:2rem;">No bloat. Built by a programme coordinator who got tired of explaining the problem to tools that didn't understand it.</p>
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <div class="strip-tag" style="display:inline-block;width:fit-content">ESI i²c — Proof-of-concept</div>
+        <div style="font-family:var(--lora);font-style:italic;font-size:.9rem;color:var(--ink-faint);line-height:1.6">"Built from the inside of a real programme, not from a product brief."</div>
+      </div>
+    </div>
+    <div class="features-list">
+      <div class="feature-row reveal">
+        <div class="feat-tag">Core · AI Layer</div>
+        <div class="feat-name">AI Eligibility Screening</div>
+        <p class="feat-desc">The feature no competitor has at this price point. Fihrist reads CVs, transcripts, and motivation letters — understands the difference between them — and scores applicants against your criteria automatically.</p>
+        <ul class="feat-bullets"><li>CV & transcript parsing</li><li>Motivation letter quality scoring</li><li>Eligibility rule engine</li><li>Red flag detection & flagging</li></ul>
+      </div>
+      <div class="feature-row reveal">
+        <div class="feat-tag">Intake Layer</div>
+        <div class="feat-name">Application Management</div>
+        <p class="feat-desc">Custom forms, document upload, automatic folder creation per applicant, and a pipeline view so nothing falls through the cracks between rounds.</p>
+        <ul class="feat-bullets"><li>Drag-and-drop form builder</li><li>Automatic applicant folders</li><li>Status pipeline (received → shortlisted → accepted)</li><li>Bulk communication templates</li></ul>
+      </div>
+      <div class="feature-row reveal">
+        <div class="feat-tag">Cohort Layer</div>
+        <div class="feat-name">Cohort Lifecycle Tracking</div>
+        <p class="feat-desc">Attendance forms, milestone check-ins, participation monitoring, and early-warning flags for participants at risk — all in one place, updated in real time.</p>
+        <ul class="feat-bullets"><li>QR-code attendance check-in</li><li>Milestone & session tracking</li><li>Dropout risk alerts</li><li>Alumni tagging & history</li></ul>
+      </div>
+      <div class="feature-row reveal">
+        <div class="feat-tag">Insight Layer</div>
+        <div class="feat-name">Programme Intelligence</div>
+        <p class="feat-desc">Conversion funnels, cohort health dashboards, and one-click outcome reports for boards, funders, and CSRD/ESG compliance.</p>
+        <ul class="feat-bullets"><li>Application conversion funnel</li><li>Cohort health dashboard</li><li>One-click outcome reports</li><li>CSRD/ESG documentation export</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PERSONAS -->
+<section class="section" id="personas">
+  <div class="section-num">04 / Who It's For</div>
+  <h2 class="section-heading reveal">Three people who <em>deserve</em><br>better tools.</h2>
+  <p class="section-intro reveal">Built bottom-up — starting with the coordinator who does the work, not the director who approves the budget.</p>
+  <hr class="rule">
+  <div class="persona-grid">
+    <div class="persona-card reveal">
+      <div class="persona-badge">Primary ICP</div>
+      <div class="persona-name">The Overloaded Coordinator</div>
+      <div class="persona-role">Programme manager · University incubator · 1–4 person team</div>
+      <p class="persona-pain">Spends <em>40–60% of their time</em> on intake admin instead of actually supporting participants. Knows exactly what's wrong. Just needs a tool that fixes it without a 3-month onboarding.</p>
+      <ul class="persona-wins"><li>Reclaims 15+ hours per batch cycle</li><li>Can adopt free tier independently</li><li>Onboards in under a day</li><li>Becomes the internal champion for growth tier</li></ul>
+    </div>
+    <div class="persona-card reveal">
+      <div class="persona-badge">Secondary ICP</div>
+      <div class="persona-name">The Director Who Needs Visibility</div>
+      <div class="persona-role">Programme director · Head of Innovation · NGO lead</div>
+      <p class="persona-pain">No real-time view of cohort health. Relies on the coordinator's <em>manual updates and gut feel.</em> Gets embarrassed at board meetings when the spreadsheet breaks.</p>
+      <ul class="persona-wins"><li>Real-time programme dashboard</li><li>One-click board reports</li><li>ESG/CSRD compliance documentation</li><li>WTP €400–500/month</li></ul>
+    </div>
+    <div class="persona-card reveal">
+      <div class="persona-badge">Tertiary · Pipeline</div>
+      <div class="persona-name">The Student Club Lead</div>
+      <div class="persona-role">Club president · Project lead · University student</div>
+      <p class="persona-pain">Running a competitive selection with <em>zero tools and zero budget.</em> Manages applications in a shared Google Doc and loses candidates to disorganisation.</p>
+      <ul class="persona-wins"><li>Free tier — no credit card</li><li>First professional tool they use</li><li>Graduates into coordinator ICP role</li><li>Builds Fihrist loyalty before workforce</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRICING -->
+<section class="section" id="pricing">
+  <div class="section-num">05 / Pricing</div>
+  <h2 class="section-heading reveal">Priced for the people<br>who <em>actually do the work.</em></h2>
+  <p class="section-intro reveal">Below Submittable. Above "a Notion template." No sales call required to get started.</p>
+  <hr class="rule">
+  <div class="pricing-grid">
+    <div class="price-card reveal">
+      <div class="price-tier">Free</div>
+      <div class="price-amount">€0<span>/mo</span></div>
+      <div class="price-period">Forever free · No credit card</div>
+      <p class="price-desc">For student clubs and first-time coordinators.</p>
+      <ul class="price-features"><li>2 active programmes</li><li>50 applicants per cycle</li><li>Basic application forms</li><li>Manual review pipeline</li><li class="muted">AI screening</li><li class="muted">Team roles</li><li class="muted">Outcome reports</li></ul>
+      <button class="price-cta" onclick="openModal('access')">Start Free</button>
+    </div>
+    <div class="price-card reveal">
+      <div class="price-tier">Starter</div>
+      <div class="price-amount">€59<span>/mo</span></div>
+      <div class="price-period">Monthly · Cancel anytime</div>
+      <p class="price-desc">For coordinators ready to stop doing intake by hand.</p>
+      <ul class="price-features"><li>Unlimited applicants</li><li>100 AI screening credits/month</li><li>Document parsing (CV, transcript)</li><li>Email templates & automation</li><li>Basic attendance tracking</li><li class="muted">Multi-programme</li><li class="muted">Team roles</li></ul>
+      <button class="price-cta" onclick="openModal('access')">Start Starter</button>
+    </div>
+    <div class="price-card featured reveal">
+      <div class="price-badge">Most Popular</div>
+      <div class="price-tier">Growth</div>
+      <div class="price-amount">€249<span>/mo</span></div>
+      <div class="price-period">Monthly · Cancel anytime</div>
+      <p class="price-desc">For established programmes that need the full picture.</p>
+      <ul class="price-features"><li>Multi-programme management</li><li>Unlimited AI screening</li><li>Full cohort lifecycle tracking</li><li>Team roles & permissions</li><li>Outcome reports & dashboards</li><li>CSRD/ESG export</li><li>API access</li></ul>
+      <button class="price-cta" onclick="openModal('access')">Get Growth</button>
+    </div>
+    <div class="price-card reveal">
+      <div class="price-tier">Institution</div>
+      <div class="price-amount">€899<span>+/mo</span></div>
+      <div class="price-period">Annual · Custom onboarding</div>
+      <p class="price-desc">For universities and foundations at scale.</p>
+      <ul class="price-features"><li>Everything in Growth</li><li>SSO & white-label</li><li>SLA & dedicated support</li><li>Custom onboarding</li><li>Advanced analytics</li><li>Procurement-ready</li><li>Custom integrations</li></ul>
+      <button class="price-cta" onclick="openModal('founder')">Contact Us</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROOF -->
+<section class="section" id="proof">
+  <div class="section-num">06 / Early Feedback</div>
+  <h2 class="section-heading reveal">From people who've <em>lived</em><br>the problem.</h2>
+  <hr class="rule">
+  <div class="proof-grid">
+    <div class="proof-card reveal"><p class="proof-quote">"Every application round I tell myself I'll build a better system next time. Then the next round comes and I'm back in the same spreadsheet. <em>Fihrist is the system I kept promising to build.</em>"</p><div class="proof-attr"><div class="proof-initials">MK</div><div><div class="proof-name">Programme Coordinator</div><div class="proof-org">University Incubator · Vienna</div></div></div></div>
+    <div class="proof-card reveal"><p class="proof-quote">"The AI screening alone would save me two full days per batch. The fact that it actually understands the difference between a motivation letter and a CV — <em>that's the thing I didn't think was possible at this price.</em>"</p><div class="proof-attr"><div class="proof-initials">AT</div><div><div class="proof-name">Innovation Manager</div><div class="proof-org">Fellowship Programme · EU-funded</div></div></div></div>
+    <div class="proof-card reveal"><p class="proof-quote">"We've been using Submittable. It costs more than our programme's operating budget and half the features are for American grant-making organisations. <em>We are not an American grant-making organisation.</em>"</p><div class="proof-attr"><div class="proof-initials">SB</div><div><div class="proof-name">Head of Programmes</div><div class="proof-org">NGO Accelerator · Berlin</div></div></div></div>
+    <div class="proof-card reveal"><p class="proof-quote">"We run five student competitions and our 'system' is a WhatsApp group. I signed up for the free tier before the landing page was even finished. <em>This is exactly what's been missing.</em>"</p><div class="proof-attr"><div class="proof-initials">ER</div><div><div class="proof-name">Student Club President</div><div class="proof-org">Engineering Faculty · TU Wien</div></div></div></div>
+  </div>
+</section>
+
+<!-- ══ CTA BAND -->
+<section id="cta">
+  <div class="cta-bg" aria-hidden="true">fihrist</div>
+  <div class="cta-inner">
+    <div class="cta-label">Early access · Limited spots</div>
+    <h2 class="cta-heading">Ready to run your programme on <em>clarity,</em> not chaos?</h2>
+    <p class="cta-sub">Join the early access list. We're onboarding programmes one by one — starting with university incubators and fellowship coordinators in the DACH region. Free tier available from day one.</p>
+    <div class="cta-row">
+      <button class="btn-cream" onclick="openModal('access')">Request Early Access</button>
+      <button class="btn-ghost-light" onclick="openModal('founder')">Talk to the founders →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER -->
+<footer>
+  <p>© 2026 Fihrist · fihrist.ai · Built in Vienna · ESI i²c, TU Wien</p>
+  <span class="footer-sig">the index was always right there.</span>
+</footer>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODAL: EARLY ACCESS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-access" role="dialog" aria-modal="true" aria-labelledby="access-title">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('access')" aria-label="Close">✕</button>
+    <div class="modal-inner">
+      <div class="modal-label">Early Access</div>
+      <h2 class="modal-title" id="access-title">Join the <em>waitlist.</em></h2>
+      <p class="modal-sub">Tell us about your programme. We'll onboard you personally and make sure Fihrist fits your workflow before you commit to anything.</p>
+
+      <div id="access-form-wrap">
+        <form id="access-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="acc-name">Full name *</label>
+              <input class="form-input" type="text" id="acc-name" name="name" placeholder="Sare Yilmaz" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="acc-email">Work email *</label>
+              <input class="form-input" type="email" id="acc-email" name="email" placeholder="sare@esi.tuwien.ac.at" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="acc-org">Organisation *</label>
+              <input class="form-input" type="text" id="acc-org" name="organisation" placeholder="ESI i²c, TU Wien" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="acc-role">Your role *</label>
+              <input class="form-input" type="text" id="acc-role" name="role" placeholder="Programme Coordinator" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="acc-type">Programme type *</label>
+            <select class="form-select" id="acc-type" name="programme_type" required>
+              <option value="" disabled selected>Select your programme type</option>
+              <option value="university_incubator">University incubator</option>
+              <option value="accelerator">Accelerator programme</option>
+              <option value="fellowship">Fellowship programme</option>
+              <option value="ngo">NGO / Foundation programme</option>
+              <option value="corporate">Corporate L&D / cohort</option>
+              <option value="student_club">Student club / competition</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="acc-size">Applicants per cycle</label>
+              <select class="form-select" id="acc-size" name="applicants_per_cycle">
+                <option value="" disabled selected>Approx. volume</option>
+                <option value="under_50">Under 50</option>
+                <option value="50_200">50 – 200</option>
+                <option value="200_500">200 – 500</option>
+                <option value="500_plus">500+</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="acc-tier">Interested tier</label>
+              <select class="form-select" id="acc-tier" name="interested_tier">
+                <option value="" disabled selected>Which plan fits?</option>
+                <option value="free">Free</option>
+                <option value="starter">Starter — €59/mo</option>
+                <option value="growth">Growth — €249/mo</option>
+                <option value="institution">Institution — €899+/mo</option>
+                <option value="unsure">Not sure yet</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="acc-pain">What's your biggest pain point right now?</label>
+            <textarea class="form-textarea" id="acc-pain" name="pain_point" placeholder="E.g. We get 300 applications by email and I spend two weeks sorting them by hand..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="acc-hear">How did you hear about Fihrist?</label>
+            <select class="form-select" id="acc-hear" name="source">
+              <option value="" disabled selected>Select one</option>
+              <option value="linkedin">LinkedIn</option>
+              <option value="twitter">Twitter / X</option>
+              <option value="referral">Someone referred me</option>
+              <option value="tuwien">TU Wien / ESI network</option>
+              <option value="search">Web search</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-submit">
+            <button type="submit" class="btn-ink" id="acc-submit-btn">Request Early Access →</button>
+          </div>
+          <div class="form-error" id="acc-error">Something went wrong. Please try again or email us at hello@fihrist.ai</div>
+        </form>
+      </div>
+
+      <div class="form-success" id="access-success">
+        <div class="form-success-icon">✦</div>
+        <div class="form-success-title">You're on the <em>list.</em></div>
+        <p class="form-success-msg">We'll be in touch personally within 48 hours to learn more about your programme and get you set up. Keep an eye on your inbox.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODAL: TALK TO FOUNDERS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-founder" role="dialog" aria-modal="true" aria-labelledby="founder-title">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('founder')" aria-label="Close">✕</button>
+    <div class="modal-inner">
+      <div class="modal-label">Direct line</div>
+      <h2 class="modal-title" id="founder-title">Talk to the <em>founders.</em></h2>
+      <p class="modal-sub">No sales rep. No demo script. Just a conversation about your programme and whether Fihrist can actually help you. We reply within 24 hours.</p>
+
+      <div id="founder-form-wrap">
+        <form id="founder-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="fo-name">Your name *</label>
+              <input class="form-input" type="text" id="fo-name" name="name" placeholder="Your name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fo-email">Email *</label>
+              <input class="form-input" type="email" id="fo-email" name="email" placeholder="you@yourorg.com" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="fo-org">Organisation</label>
+            <input class="form-input" type="text" id="fo-org" name="organisation" placeholder="Organisation name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="fo-subject">What would you like to talk about? *</label>
+            <select class="form-select" id="fo-subject" name="subject" required>
+              <option value="" disabled selected>Select a topic</option>
+              <option value="demo">I'd like a product demo</option>
+              <option value="institution">Institution / enterprise pricing</option>
+              <option value="partnership">Partnership or integration</option>
+              <option value="investor">Investment conversation</option>
+              <option value="press">Press or media inquiry</option>
+              <option value="other">Something else</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="fo-message">Your message *</label>
+            <textarea class="form-textarea" id="fo-message" name="message" style="min-height:130px" placeholder="Tell us what's on your mind..." required></textarea>
+          </div>
+          <div class="form-submit">
+            <button type="submit" class="btn-ink" id="fo-submit-btn">Send Message →</button>
+          </div>
+          <div class="form-error" id="fo-error">Something went wrong. Please try again or email hello@fihrist.ai directly.</div>
+        </form>
+      </div>
+
+      <div class="form-success" id="founder-success">
+        <div class="form-success-icon">✦</div>
+        <div class="form-success-title">Message <em>received.</em></div>
+        <p class="form-success-msg">We read every message ourselves. You'll hear back within 24 hours — usually less.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Cursor
+const cursor=document.getElementById('cursor');
+document.addEventListener('mousemove',e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px'});
+document.querySelectorAll('a,button,.feature-row,.price-card,.proof-card,.persona-card,.step-col').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cursor.classList.remove('big'));
+});
+
+// Scroll reveal
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*70);obs.unobserve(e.target)}});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Nav hide
+let lastY=0;
+window.addEventListener('scroll',()=>{
+  const y=window.scrollY;
+  document.getElementById('navbar').style.transform=y>lastY&&y>120?'translateY(-100%)':'translateY(0)';
+  lastY=y;
+},{passive:true});
+
+// Modal
+function openModal(id){
+  document.getElementById('modal-'+id).classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(id){
+  document.getElementById('modal-'+id).classList.remove('open');
+  document.body.style.overflow='';
+}
+document.querySelectorAll('.modal-overlay').forEach(overlay=>{
+  overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal(overlay.id.replace('modal-',''))});
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(m=>closeModal(m.id.replace('modal-','')))});
+
+// Form submit helper
+async function submitForm(formId, successId, errorId, btnId, endpoint) {
+  const form = document.getElementById(formId);
+  const btn = document.getElementById(btnId);
+  const errEl = document.getElementById(errorId);
+  const successEl = document.getElementById(successId);
+  if (!form.checkValidity()) { form.reportValidity(); return; }
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+  errEl.style.display = 'none';
+  const data = Object.fromEntries(new FormData(form));
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error();
+    form.closest('#'+formId.replace('-form','-form-wrap')).style.display='none';
+    successEl.style.display='block';
+  } catch {
+    errEl.style.display='block';
+    btn.textContent='Try Again';
+    btn.disabled=false;
+  }
+}
+
+document.getElementById('access-form').addEventListener('submit', e => {
+  e.preventDefault();
+  submitForm('access-form','access-success','acc-error','acc-submit-btn','/api/early-access');
+});
+document.getElementById('founder-form').addEventListener('submit', e => {
+  e.preventDefault();
+  submitForm('founder-form','founder-success','fo-error','fo-submit-btn','/api/contact');
+});
+</script>
+</body>
+</html>
