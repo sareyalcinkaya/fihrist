@@ -33,13 +33,12 @@
 .who-tag{font-size:.8rem;font-weight:500;color:var(--text-muted);background:var(--white);border:1px solid var(--border);padding:.3rem .85rem;border-radius:20px}
 
 /* REACH US */
-.reach-section{padding:100px 0;background:var(--surface)}
-.reach-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;max-width:960px;margin:0 auto}
-.reach-left .section-title{font-size:clamp(1.8rem,2.8vw,2.6rem)}
-.reach-left .section-sub{margin-top:.75rem}
-.reach-note{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-light);margin-top:1.5rem}
+.reach-section{padding:80px 0;background:var(--surface)}
+.reach-head{text-align:center;margin-bottom:2.5rem}
+.reach-head .section-sub{margin:.5rem auto 0}
+.reach-note{display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-light);margin-top:1rem}
 .reach-note::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0;animation:pulse 2s infinite}
-.reach-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;box-shadow:var(--shadow-sm)}
+.reach-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);overflow:hidden;max-width:680px;margin:0 auto}
 
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
@@ -145,26 +144,22 @@
   <!-- REACH US -->
   <section class="reach-section" id="reach">
     <div class="container">
-      <div class="reach-grid">
-        <div class="reach-left reveal">
-          <div class="section-tag">Get in touch</div>
-          <h2 class="section-title">Let's talk about your programme.</h2>
-          <p class="section-sub">Tell us what you're working on. We'll get back within 24 hours — no sales scripts, just a conversation.</p>
-          <div class="reach-note">Free tier available from day one</div>
-        </div>
-        <div class="reveal">
-          <div class="reach-card" style="padding:0;overflow:hidden">
-            <iframe
-              src="https://docs.google.com/forms/d/e/1FAIpQLScNbaBquUpDiY59cVUKucBt9uC0SbqIAXcmGfrRMjkEu4asxw/viewform?embedded=true"
-              width="100%"
-              height="620"
-              frameborder="0"
-              marginheight="0"
-              marginwidth="0"
-              style="display:block"
-            >Loading…</iframe>
-          </div>
-        </div>
+      <div class="reach-head reveal">
+        <div class="section-tag">Get in touch</div>
+        <h2 class="section-title">Let's talk about your programme.</h2>
+        <p class="section-sub">Tell us what you're working on. We'll get back within 24 hours — no sales scripts, just a conversation.</p>
+        <div class="reach-note">Free tier available from day one</div>
+      </div>
+      <div class="reach-card reveal">
+        <iframe
+          src="https://docs.google.com/forms/d/e/1FAIpQLScNbaBquUpDiY59cVUKucBt9uC0SbqIAXcmGfrRMjkEu4asxw/viewform?embedded=true"
+          width="100%"
+          height="900"
+          frameborder="0"
+          marginheight="0"
+          marginwidth="0"
+          style="display:block"
+        >Loading…</iframe>
       </div>
     </div>
   </section>
