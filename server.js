@@ -31,7 +31,6 @@ function appendRecord(file, record) {
 }
 
 // Resend HTTP API — no SMTP, no nodemailer, works everywhere
-//const RESEND_API_KEY = process.env.EMAIL_PASS || '';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || process.env.EMAIL_PASS || '';
 const NOTIFY_TO = process.env.NOTIFY_TO || '';
 const FROM_ADDR = 'Fihrist <onboarding@resend.dev>';
