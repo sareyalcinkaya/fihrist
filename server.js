@@ -48,8 +48,8 @@ const transporter = nodemailer.createTransport({
 });
 
 const NOTIFY_TO = process.env.NOTIFY_TO || process.env.EMAIL_USER || '';
-const FROM_ADDR = `"Fihrist" <${process.env.EMAIL_USER || 'hello@fihrist.ai'}>`;
-
+//const FROM_ADDR = `"Fihrist" <${process.env.EMAIL_USER || 'hello@fihrist.ai'}>`;
+const FROM_ADDR = `"Fihrist" <onboarding@resend.dev>`;
 async function sendMail(opts) {
   if (!process.env.EMAIL_USER) return; // skip if not configured
   try { await transporter.sendMail({ from: FROM_ADDR, ...opts }); }
