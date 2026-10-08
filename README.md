@@ -1,152 +1,137 @@
-# Fihrist — fihrist.ai
+# Frist
 
-AI-native programme management for cohort-based organizations.
+**The programme OS for cohort builders.**
+*Run your programme. Not your inbox.*
 
-## Project structure
+Frist is an AI-native programme management platform for cohort-based organisations such as university incubators, accelerators, fellowships and NGO programmes. It brings intake, applicant screening, communication and cohort tracking into one system of record.
+
+> Made for the **Extended Study on Innovation (ESI)** at TU Wien's **i²c Innovation Incubation Center**.
+> Author: Sare Melek Yalcinkaya. Formerly named Klue. Domain: fihrist.ai. This repository folder is still called `fihrist`.
+
+---
+
+## 1. The problem
+
+Cohort-based programmes run the same cycle again and again: applications come in, someone checks eligibility, decisions are communicated, participants are tracked, and results are reported. Programme coordinators currently run this cycle on a patchwork of general-purpose tools: email, Google Forms, Google Sheets, Notion, Zoom and shared drives.
+
+What this looks like in practice (observed first-hand in the ESI admissions process at i²c):
+
+- **Applications arrive by email and forms**, and are sorted and checked by hand against eligibility criteria. CVs, transcripts and motivation letters are read one by one.
+- **Participant information lives in several places** and goes out of date. A colleague asks for a current, shareable overview of participants, and nobody can give one without rebuilding it manually.
+- **Status emails are written and sent by hand** (accepted, waitlisted, rejected, reminders), which is repetitive and error-prone.
+- **Cohort tracking and reporting are rebuilt every cycle**, and knowledge is lost at handover between coordinators or batches.
+- **Existing specialist tools miss this group.** Application platforms such as Submittable and AcceleratorApp are either not built for programme coordination or priced for larger organisations. Airtable and Notion are flexible but leave the coordinator to build and maintain the whole workflow.
+
+The people carrying this load are mostly small teams, often one coordinator, who need to spend their time on judgement and relationships with participants rather than on administration.
+
+## 2. The solution
+
+Frist is **not a replacement** for the tools coordinators already use. It is the **connective layer where they come together**: the system of record for the programme, with AI doing the repetitive work and a human making every decision.
+
+Core workflow:
+
+1. **Form builder**: create an application form with live preview.
+2. **Applications**: applicants arrive in one table, with their past engagements visible per person.
+3. **AI eligibility screening**: documents are read against the programme's criteria and applicants are marked Eligible or Not Eligible.
+4. **AI review**: the coordinator reviews candidates in a split view and can accept, waitlist or reject, including through natural-language commands ("Accept Lena, waitlist Max").
+5. **Cohort dashboard**: tracking, attendance, milestones and updates, with an in-app AI assistant for programme commands.
+6. **Automated, status-based communication**: emails are triggered by applicant status.
+
+Design principles:
+
+- **Human in the loop.** AI proposes, the coordinator decides. Screening never admits anyone on its own.
+- **Platform first, AI on top.** The product is useful without AI; AI is an assistant inside Frist, much like an AI button in Notion.
+- **Privacy by design.** EU-hosted, GDPR-native, with a self-hosted option for institutions that require it. Applicant data is not used to train models.
+- **Integrates, does not replace.** Connections to tools such as Zoom, Eventbrite, HubSpot, Salesforce and Zapier are planned.
+
+## 3. Innovation need
+
+**Why is innovation needed here?**
+Innovation programmes exist to help others build new things, yet they are run with improvised tooling that does not scale with the number of applicants, the number of programmes, or the turnover of the team. The gap is not a missing feature in an existing tool, it is a missing category: software built around the programme lifecycle itself.
+
+**What is new about Frist?**
+
+| Aspect | Today | Frist |
+|---|---|---|
+| Positioning | Forms, spreadsheets and CRMs stitched together | One "programme OS" that connects the existing tools |
+| Screening | Manual reading of every document | AI-assisted eligibility screening with human final decision |
+| Communication | Hand-written emails per status | Status-triggered, automated messages |
+| Institutional memory | Lost at handover | Persistent applicant and cohort database across programmes |
+| Pricing | Enterprise-level or build-it-yourself | Free-forever entry tier, feature-based pricing |
+| Data protection | Often unclear | EU-hosted, GDPR-native, self-hosted option |
+
+**Why now?** Document-understanding AI is now reliable enough to take over first-pass screening and drafting, and EU data-protection expectations make a privacy-first, European alternative a real differentiator for universities and public programmes.
+
+**Why from i²c / ESI?** The idea comes from running ESI admissions and coordination directly. The pain was lived, not assumed, and ESI is the natural first testing ground.
+
+## 4. Scope
+
+### Target users
+
+| Persona | Role | Priority |
+|---|---|---|
+| **Coordinator Lexi** | University incubator coordinator, starting in the DACH region | Primary |
+| **Director Max** | Corporate innovation lab manager | Secondary |
+
+Segments: university incubators (pursue now), corporate innovation labs (keep open). Other programme types, such as accelerators, fellowships, NGOs, grant managers and conferences, are noted for later and not pursued now.
+
+### In scope
+
+- Application intake and form building
+- Applicant database with engagement history
+- AI-assisted eligibility screening and review
+- Status-based email communication
+- Cohort tracking and a programme dashboard
+- Integrations with the tools coordinators already use
+
+### Out of scope (for now)
+
+- A general "all-in-one tool for early-stage entrepreneurs". This direction was considered after feedback that the market is niche, and rejected because it is broader, more crowded, and weaker on focus.
+- Replacing email, Zoom, Notion or Sheets
+- Fully automated admission decisions
+- Payments, grant disbursement and legal or contract management
+
+### Competitive landscape
+
+Submittable, AcceleratorApp, Airtable and Notion are the four main reference points.
+
+### Business model (draft)
+
+| Tier | Price | Includes |
+|---|---|---|
+| Free | €0 | 3 programmes, 1 seat |
+| Core | €19 / month | Unlimited programmes, 3 seats |
+| Scale | €299 / month | Multi-workspace, self-hosted option |
+
+An AI screening add-on is planned for Phase 2, priced per credit. Planning assumption: 100 paying programmes by 2031 at about €80 per month on average, roughly €96K ARR. This is a bottom-up estimate, not sourced market research.
+
+### Roadmap
+
+Austria first, then DACH, then Europe. Roadmap 2026 to 2031.
+
+## 5. Current status (honest view)
+
+- Solo founder, no technical co-founder yet.
+- **Interactive demo** built (React, single HTML file) covering the full workflow above. It is a demonstration, not a production product.
+- **Landing page** live with an early-access form and contact form, backed by a small Node.js/Express server (see below).
+- Customer interviews with programme coordinators are being set up; no completed interview base yet.
+- ESI / i²c is the proof-of-concept environment. It is not yet a formally confirmed design partner.
+- Known open questions: IP protection, technical risk, and the technical skills needed to build the full product.
+
+## 6. Repository contents
 
 ```
 fihrist/
-├── public/
-│   └── index.html       ← The entire frontend (one file)
-├── data/                ← Auto-created on first run
-│   ├── early-access.json
-│   └── contacts.json
-├── server.js            ← Express backend
+├── public/          Landing site (index, features, pricing, styles)
+├── server.js        Express backend: early-access, contact, admin endpoints
 ├── package.json
-├── .env.example         ← Copy to .env and fill in
-└── .gitignore
+├── .env.example     Environment variables template
+├── SETUP.md         Technical setup, email and deployment guide
+└── README.md        This file
 ```
 
-## Local setup (5 minutes)
+For running the landing page locally, email configuration, deployment and the API reference, see [SETUP.md](SETUP.md).
 
-### 1. Install Node.js
-Download from https://nodejs.org — choose the LTS version.
+## 7. Context
 
-### 2. Install dependencies
-```bash
-cd fihrist
-npm install
-```
-
-### 3. Configure environment
-```bash
-cp .env.example .env
-```
-Open `.env` and fill in your email credentials (see below).
-
-### 4. Run the server
-```bash
-npm start
-```
-Visit http://localhost:3000 — the site is live.
-
----
-
-## Email setup (Gmail recommended)
-
-The server sends two emails per form submission:
-- A **notification** to you (founders) with all the details
-- A **confirmation** to the person who submitted
-
-### Gmail App Password setup
-1. Go to your Google Account → **Security**
-2. Enable **2-Step Verification** if not already on
-3. Go to **App passwords** (search for it in the security page)
-4. Create a new app password — select "Mail" and "Other (custom name)" → type "Fihrist"
-5. Copy the 16-character password into your `.env` as `EMAIL_PASS`
-
-```env
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=hello@fihrist.ai       # your Gmail address
-EMAIL_PASS=xxxx xxxx xxxx xxxx    # the 16-char app password
-NOTIFY_TO=hello@fihrist.ai        # where YOU want notifications
-```
-
----
-
-## Viewing submissions
-
-All submissions are saved as JSON files in the `data/` folder.
-You can also view them via the admin endpoint:
-
-```
-GET https://your-domain.com/api/admin/submissions?secret=YOUR_ADMIN_SECRET
-```
-
-Set `ADMIN_SECRET` in your `.env` to a long random string.
-
----
-
-## Deploying to Railway (recommended — free tier available)
-
-Railway is the easiest way to deploy a Node.js app with a real domain.
-
-### Step 1 — Create a Railway account
-Go to https://railway.app and sign up with GitHub.
-
-### Step 2 — Push your code to GitHub
-```bash
-# In the fihrist/ folder:
-git init
-git add .
-git commit -m "Initial commit"
-# Create a repo at github.com, then:
-git remote add origin https://github.com/YOUR_USERNAME/fihrist.git
-git push -u origin main
-```
-
-### Step 3 — Deploy on Railway
-1. Click **New Project** → **Deploy from GitHub repo**
-2. Select your `fihrist` repository
-3. Railway auto-detects Node.js and runs `npm start`
-
-### Step 4 — Add environment variables
-In Railway dashboard → your project → **Variables** tab:
-Add each line from your `.env` file as a key-value pair.
-
-### Step 5 — Add your custom domain
-Railway dashboard → your project → **Settings** → **Domains**:
-- Click **Add Custom Domain**
-- Enter `fihrist.ai`
-- Copy the CNAME record Railway gives you
-- Go to your domain registrar (Namecheap, Porkbun, etc.)
-- Add the CNAME record
-- SSL is automatic (usually active within 10 minutes)
-
-### Done — your site is live at fihrist.ai
-
----
-
-## API reference
-
-### POST /api/early-access
-```json
-{
-  "name": "Sare Yilmaz",
-  "email": "sare@esi.tuwien.ac.at",
-  "organisation": "ESI i²c, TU Wien",
-  "role": "Programme Coordinator",
-  "programme_type": "university_incubator",
-  "applicants_per_cycle": "200_500",
-  "interested_tier": "growth",
-  "pain_point": "We get 300 applications by email...",
-  "source": "linkedin"
-}
-```
-Returns `201` on success, `409` if email already exists, `400` on validation error.
-
-### POST /api/contact
-```json
-{
-  "name": "Alex Mueller",
-  "email": "alex@foundation.org",
-  "organisation": "Innovation Foundation",
-  "subject": "demo",
-  "message": "I'd love to see a demo..."
-}
-```
-Returns `201` on success.
-
-### GET /api/admin/submissions?secret=YOUR_ADMIN_SECRET
-Returns all early access requests and contact messages as JSON.
+This project was developed as part of the Extended Study on Innovation at the i²c Innovation Incubation Center, TU Wien, and was presented at the ESI Demo Day. Jury feedback pointed to the niche scope of the market, which led to the sharper positioning and the focused target segment described above.
